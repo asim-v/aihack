@@ -1,0 +1,10 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+medium.com	TRUE	/	FALSE	1999999999	uid	lo_5903bfa2c8cf
+medium.com	TRUE	/	FALSE	1999999999	sid	1:s75ZH1sBwxfXPXMaCQMllTvOHPYaHZHJLM0Tx4DPoFF5hwu3jcOTAhnsntJRCryN
+medium.com	TRUE	/	FALSE	1999999999	optimizelyEndUserId	lo_5903bfa2c8cf
+.google.com	TRUE	/	FALSE	1999999999	NID	204=r9jz-8nKRiNxZwsijjjo44KNLbkt3NRPLveHy1UC7IH8ECb87wMROjm38TaNay-qTzNlAMJUh0CmnkG0lJ1oj3PvxzYHq8Ags2D1JMtOKwfGcKdpgRYFcwBuLQRPrlimsOh_l-2LsQAxJ-1mYL9vqxm7eBgDr37_UODNH3H4Occ
+.medium.com	TRUE	/	FALSE	1999999999	__cfduid	d151548f4bd1cc3f4b0a7d57b81f6841d1602472050
+.medium.com	TRUE	/	FALSE	1999999999	__cfruid	7996c69c5049f9764cc58259beecfd3315e00b1e-1602472050
+medium.com	TRUE	/	FALSE	1999999999	SameSite	None
+
