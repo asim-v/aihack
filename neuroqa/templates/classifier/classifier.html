@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Classifying images using a pre trained model in TensorFlow.js</title>
+  <style type="text/css">
+/**
+ * @license
+ * Copyright 2018 Google LLC. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * =============================================================================
+ */
+
+/******************************************************
+ * Stylesheet by Jason Mayes 2020.
+ *
+ * Got questions? Reach out to me on social:
+ * Twitter: @jason_mayes
+ * LinkedIn: https://www.linkedin.com/in/creativetech
+ *****************************************************/
+
+
+body {
+  font-family: helvetica, arial, sans-serif;
+  margin: 2em;
+  color: #3D3D3D;
+}
+
+h1 {
+  font-style: italic;
+  color: #FF6F00;
+}
+
+em {
+  font-weight: bold;
+}
+
+video {
+  clear: both;
+  display: block;
+}
+
+section {
+  opacity: 1;
+  transition: opacity 500ms ease-in-out;
+}
+
+header, footer {
+  clear: both;
+}
+
+.removed {
+  display: none;
+}
+
+.invisible {
+  opacity: 0.2;
+}
+
+.note {
+  font-style: italic;
+  font-size: 130%;
+}
+
+.webcam, .classifyOnClick {
+  position: relative;
+  float: left;
+  width: 48%;
+  margin: 2% 1%;
+  cursor: pointer;
+}
+
+.webcam p, .classifyOnClick p {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 5px;
+  background-color: #FF6F00;
+  color: #FFF;
+  border: 1px dashed rgba(255, 255, 255, 0.7);
+  margin: 0 0 10px 0;
+}
+
+.classifyOnClick {
+  z-index: 0;
+}    
+  </style>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Classifying images using a pre trained model in TensorFlow.js</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Jason Mayes">
+    
+    <!-- Import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <h1>Classifying images using a pre trained model in TensorFlow.js</h1>
+    
+    
+
+    <!-- 
+    <h2>How to use</h2>
+    <p>Please wait for the model to load before trying the demos below at which point they will become visible when ready to use.</p>
+     -->
+    <section id="demos" class="invisible">
+      <h2>Demo: Classify Images</h2>
+      <p><em>Click on an image below</em> to try and recognize what is in the image using the power of Machine Learning!</p>
+
+      <div class="classifyOnClick">
+        <img src="https://cdn.glitch.com/5bf7c54b-c36f-4009-a191-186909fb788e%2Fdog_flickr_publicdomain.jpg?v=1579209396930" width="100%" crossorigin="anonymous" title="Click to get classification!" />
+      </div>
+      <div class="classifyOnClick">
+        <img src="https://cdn.glitch.com/5bf7c54b-c36f-4009-a191-186909fb788e%2Fcat_flickr_publicdomain.jpg?v=1579215444151" width="100%" crossorigin="anonymous" title="Click to get classification!" />
+      </div>
+
+
+      <h2>Demo: Webcam continuous classification</h2>
+      <p>Hold some objects up close to your webcam (avoid having lots of stuff in the shot at the same time for best results) to get a real time classification! You must be on <a href="https://codepen.io/jasonmayes/pen/Jjompww">the https version of the website</a> for this to work. When ready click "enable webcam" below and accept access to the webcam when the browser asks (check the top left of your window)</p>
+     
+      <div class="webcam">
+        <button id="webcamButton">Enable Webcam</button>
+        <video id="webcam" autoplay></video>
+        <p id="webcamPredictions"></p>
+      </div>
+    </section>
+    
+    <footer class="note"> 
+      <p>
+        <em>Please note:</em> This demo loads our desired machine learning model via <a href="https://github.com/tensorflow/tfjs-models/tree/master/mobilenet" title="View TensorFlow.js MobileNet on our GitHub">an easy to use JavaScript class</a> made by the TensorFlow.js team to do the hardwork for you. No machine learning knowledge is needed to use this. See our other tutorials if you want to load a model directly yourself, or recognize a custom object using your own data.
+      </p>
+      <p>
+         Want to recognize more than one thing in an image? Check out our <a href="https://codepen.io/jasonmayes/pen/qBEJxgg">Multiple Object Detection example</a>.
+      </p>
+    </footer>
+    
+    <!-- Import TensorFlow.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js" type="text/javascript"></script>
+    
+    <!-- Import pre-trained MobileNet model so that we can recognize things in images  -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.0.4"></script>
+    
+    <!-- Import the page's JavaScript to do some stuff -->
+    <script src="/script.js" defer></script>
+  </body>
+</html>
+<!-- partial -->
+  <script type="text/javascript">
+/**
+ * @license
+ * Copyright 2018 Google LLC. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * =============================================================================
+ */
+
+/********************************************************************
+ * Demo created by Jason Mayes 2020.
+ *
+ * Got questions? Reach out to me on social:
+ * Twitter: @jason_mayes
+ * LinkedIn: https://www.linkedin.com/in/creativetech
+ ********************************************************************/
+
+// Grab various useful DOM elements from the webpage we need later.
+const video = document.getElementById('webcam');
+const webcamPredictions = document.getElementById('webcamPredictions');
+const demosSection = document.getElementById('demos');
+
+// Keep track of model and status.
+var modelHasLoaded = false;
+var model = undefined;
+
+// Before we can use MobileNet we must wait for it to finish loading. 
+// Machine Learning models can be large and take a moment to get 
+// everything they need to run.
+mobilenet.load().then(function (loadedModel) {
+  model = loadedModel;
+  modelHasLoaded = true;
+  // Show demo section now model is ready to use.
+  demosSection.classList.remove('invisible');
+});
+
+
+/********************************************************************
+// Demo 1: Grab a bunch of images from the page and classify them
+// upon click.
+********************************************************************/
+
+// In this demo, we have put all our clickable images in divs with the 
+// CSS class 'classifyOnClick'. Lets get all the elements that have
+// this class.
+const imageContainers = document.getElementsByClassName('classifyOnClick');
+
+// Now let's go through all of these and add a click event listener.
+for (let i = 0; i < imageContainers.length; i++) {
+  // Add event listener to the child element whichis the img element.
+  imageContainers[i].children[0].addEventListener('click', handleClick);
+}
+
+
+// When an image is clicked, let's classify it and display results!
+function handleClick(event) {
+  if (!modelHasLoaded) {
+    return;
+  }
+  
+  // We can call model.classify as many times as we like with
+  // different image data each time. This returns a promise
+  // which we wait to complete and then call a function to
+  // print out the results of the prediction.
+  model.classify(event.target).then(function (predictions) {
+    // Lets write the predictions to a new paragraph element and
+    // add it to the DOM.
+    const p = document.createElement('p');
+    p.innerText = 'We think this image contains a: ' + predictions[0].className 
+        + ' - with ' + Math.round(parseFloat(predictions[0].probability) * 100) 
+        + '% confidence.';
+
+    event.target.parentNode.appendChild(p);
+  });
+}
+
+
+
+/********************************************************************
+// Demo 2: Continuously grab image from webcam stream and classify it.
+// Note: You must access the demo on https for this to work:
+// https://codepen.io/jasonmayes/pen/Jjompww
+********************************************************************/
+
+// Check if webcam access is supported.
+function hasGetUserMedia() {
+  return !!(navigator.mediaDevices &&
+    navigator.mediaDevices.getUserMedia);
+}
+
+
+function predictWebcam() {
+  // Now let's start classifying the stream.
+  model.classify(video).then(function (predictions) {
+    webcamPredictions.innerText = 'We think this image contains a: ' + predictions[0].className 
+        + ' - with ' + Math.round(parseFloat(predictions[0].probability) * 100) 
+        + '% confidence.';
+    // Call this function again to keep predicting when the browser is ready.
+    window.requestAnimationFrame(predictWebcam);
+  });
+}
+
+
+// Enable the live webcam view and start classification.
+function enableCam(event) {
+  if (!modelHasLoaded) {
+    return;
+  }
+  
+  // Hide the button.
+  event.target.classList.add('removed');  
+  
+  // getUsermedia parameters.
+  const constraints = {
+    video: true
+  };
+
+  // Activate the webcam stream.
+  navigator.mediaDevices.getUserMedia(constraints).then(function(stream) {
+    video.srcObject = stream;
+    video.addEventListener('loadeddata', predictWebcam);
+  });
+}
+
+
+// If webcam supported, add event listener to button for when user
+// wants to activate it.
+if (hasGetUserMedia()) {
+  const enableWebcamButton = document.getElementById('webcamButton');
+  enableWebcamButton.addEventListener('click', enableCam);
+} else {
+  console.warn('getUserMedia() is not supported by your browser');
+}    
+
+  </script>
+
+</body>
+</html>
